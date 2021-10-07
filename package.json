@@ -26,13 +26,13 @@
   "license": "ISC",
   "dependencies": {
     "@overnightjs/core": "^1.7.4",
-    "@types/mongoose": "5.7.22",
+    "@types/mongoose": "^5.7.22",
     "axios": "^0.21.4",
     "body-parser": "^1.19.0",
     "config": "^3.3.6",
     "express": "^4.17.1",
     "module-alias": "^2.2.2",
-    "mongoose": "5.9.18"
+    "mongoose": "^5.9.18"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
