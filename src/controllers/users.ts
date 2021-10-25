@@ -10,6 +10,7 @@ export class UsersController extends BaseController {
   public async create(req: Request, res: Response): Promise<void> {
     try {
       const user = new User(req.body);
+      console.log(req.body);
       const newUser = await user.save();
       res.status(201).send(newUser);
     } catch (error) {
@@ -32,7 +33,7 @@ export class UsersController extends BaseController {
     if(!(await AuthService.comparePasswords(password, user.password ))){
       return res.status(401).send({
         code: 401,
-        error: 'assword does not match!',
+        error: 'Password does not match!',
       })
     }
     const token = AuthService.generateToken(user.toJSON());
