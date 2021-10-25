@@ -10,7 +10,6 @@ export class UsersController extends BaseController {
   public async create(req: Request, res: Response): Promise<void> {
     try {
       const user = new User(req.body);
-      console.log(req.body);
       const newUser = await user.save();
       res.status(201).send(newUser);
     } catch (error) {
