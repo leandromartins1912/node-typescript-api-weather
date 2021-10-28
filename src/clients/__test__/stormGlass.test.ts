@@ -1,5 +1,5 @@
 import { StormGlass } from '@src/clients/stormGlass';
-import stormglassNormalizedResponseFixture from '@test/fixtures/stormglass_normalized_response_3_hours.json';
+import stormGlassNormalizedResponseFixture from '@test/fixtures/stormglass_normalized_response_3_hours.json';
 import * as stormglassWeatherPointFixture from '@test/fixtures/stormglass_weather_3_hours.json';
 
 import * as HTTPUtil from '@src/util/request';
@@ -19,7 +19,7 @@ describe('StormGlass client', () => {
 
     const stormGlass = new StormGlass(mockedRequest);
     const response = await stormGlass.fetchPoints(lat, lng);
-    expect(response).toEqual(stormglassNormalizedResponseFixture);
+    expect(response).toEqual(stormGlassNormalizedResponseFixture);
   });
 
   it('should exclude incomplete data points', async () => {
