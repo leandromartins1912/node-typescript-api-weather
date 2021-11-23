@@ -1,28 +1,44 @@
-import { Beach, BeachPosition } from "@src/models/beach";
+import { ForecastPoint } from "@src/clients/stormGlass";
+import { Beach, GeoPosition } from "@src/models/beach";
+import { Forecast } from "./forecast";
 
 const waveHeights = {
     ankleToKnee: {
-      min: 0.3,
-      max: 1.0,
+        min: 0.3,
+        max: 1.0,
     },
     waistHigh: {
-      min: 1.0,
-      max: 2.0,
+        min: 1.0,
+        max: 2.0,
     },
     headHigh: {
-      min: 2.0,
-      max: 2.5,
+        min: 2.0,
+        max: 2.5,
     },
-  };
-  
+};
+
 
 export class Rating {
 
     constructor(private beach: Beach) { }
 
+    public getRateForPoint(point: ForecastPoint): number {
+        const swellDirection = this.getPositionFromLocation(point.swellDirection);
+        const windDirection = this.getPositionFromLocation(point.windDirection);
+        const windAndWaveRating = this.getRatingBasedOnWindAndWavePositions(
+            swellDirection,
+            windDirection
+        );
+        const swellHeightRating = this.getRatingForSwellSize(point.swellHeight);
+        const swellPeriodRating = this.getRatingForSwellPeriod(point.swellPeriod);
+        const finalRating =
+            (windAndWaveRating + swellHeightRating + swellPeriodRating) / 3;
+        return Math.round(finalRating);
+    }
+
     public getRatingBasedOnWindAndWavePositions(
-        wavePosition: BeachPosition,
-        windPosition: BeachPosition
+        wavePosition: GeoPosition,
+        windPosition: GeoPosition
     ): number {
         if (wavePosition === windPosition) {
             return 1;
@@ -32,20 +48,20 @@ export class Rating {
         return 3;
     }
 
-    private isWindOffShore(wavePosition: BeachPosition, windPosition: BeachPosition): boolean {
+    private isWindOffShore(wavePosition: GeoPosition, windPosition: GeoPosition): boolean {
         return (
-            (wavePosition === BeachPosition.N &&
-                windPosition === BeachPosition.S &&
-                this.beach.position === BeachPosition.N) ||
-            (wavePosition === BeachPosition.S &&
-                windPosition === BeachPosition.N &&
-                this.beach.position === BeachPosition.S) ||
-            (wavePosition === BeachPosition.E &&
-                windPosition === BeachPosition.W &&
-                this.beach.position === BeachPosition.E) ||
-            (wavePosition === BeachPosition.W &&
-                windPosition === BeachPosition.E &&
-                this.beach.position === BeachPosition.W)
+            (wavePosition === GeoPosition.N &&
+                windPosition === GeoPosition.S &&
+                this.beach.position === GeoPosition.N) ||
+            (wavePosition === GeoPosition.S &&
+                windPosition === GeoPosition.N &&
+                this.beach.position === GeoPosition.S) ||
+            (wavePosition === GeoPosition.E &&
+                windPosition === GeoPosition.W &&
+                this.beach.position === GeoPosition.E) ||
+            (wavePosition === GeoPosition.W &&
+                windPosition === GeoPosition.E &&
+                this.beach.position === GeoPosition.W)
         );
     }
 
@@ -63,11 +79,11 @@ export class Rating {
         return 5;
     }
 
-    public getPositionFromLocation(coordinates: number): BeachPosition {
-        if (coordinates < 50) return BeachPosition.N;
-        if (coordinates < 120) return BeachPosition.E;
-        if (coordinates < 220) return BeachPosition.S;
-        if (coordinates < 310) return BeachPosition.W;
-        return BeachPosition.N;
-      }
+    public getPositionFromLocation(coordinates: number): GeoPosition {
+        if (coordinates < 50) return GeoPosition.N;
+        if (coordinates < 120) return GeoPosition.E;
+        if (coordinates < 220) return GeoPosition.S;
+        if (coordinates < 310) return GeoPosition.W;
+        return GeoPosition.N;
+    }
 }
