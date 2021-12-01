@@ -19,12 +19,15 @@ export class ForecastProcessingInternalError extends InternalError {
 }
 
 export class Forecast {
-    constructor(protected stormGlass = new StormGlass(), protected RatingService: typeof Rating = Rating) { }
+    constructor(
+        protected stormGlass = new StormGlass(),
+        protected RatingService: typeof Rating = Rating
+    ) { }
 
     public async processForecastForBeaches(
         beaches: Beach[]
     ): Promise<TimeForecast[]> {
-        
+
         try {
             const beachForecast = await this.calculateRating(beaches)
             const timeForecast = this.mapForecastByTime(beachForecast);
@@ -32,6 +35,7 @@ export class Forecast {
                 time: t.time,
                 forecast: _.orderBy(t.forecast, ['rating'], ['desc']),
             }));
+         
         } catch (error) {
             logger.error(error)
             throw new ForecastProcessingInternalError(error.message);
@@ -47,9 +51,7 @@ export class Forecast {
             const enrichedBeachData = this.enrichBeachData(points, beach, rating);
             pointsWithCorrectSources.push(...enrichedBeachData);
         }
-
         return pointsWithCorrectSources;
-
     }
 
     private mapForecastByTime(forecast: BeachForecast[]): TimeForecast[] {

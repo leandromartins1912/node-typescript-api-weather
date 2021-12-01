@@ -7,8 +7,8 @@ jest.mock('@src/clients/stormGlass');
 
 describe('Forecast Service', () => {
   const mockedStormGlassService = new StormGlass() as jest.Mocked<StormGlass>;
-  
-  it('should return the forecast for mutiple beaches in the same hour with different ratings ordered by rating decreasing', async () => {
+
+  it('should return the forecast for mutiple beaches in the same hour with different ratings ordered by rating', async () => {
     mockedStormGlassService.fetchPoints.mockResolvedValueOnce([
       {
         swellDirection: 123.41,
@@ -103,7 +103,6 @@ describe('Forecast Service', () => {
         position: GeoPosition.E,
         user: 'fake-id',
       },
-
     ];
     const expectedResponse = [
       {
@@ -154,7 +153,7 @@ describe('Forecast Service', () => {
             lng: 151.289824,
             name: 'Manly',
             position: 'E',
-            rating: 1,
+            rating: 2,
             swellDirection: 182.56,
             swellHeight: 0.28,
             swellPeriod: 3.44,
