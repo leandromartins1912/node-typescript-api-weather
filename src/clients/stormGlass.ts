@@ -75,7 +75,7 @@ export class StormGlass {
     'swellDirection,swellHeight,swellPeriod,waveDirection,waveHeight,windDirection,windSpeed';
   readonly stormGlassAPISource = 'noaa';
 
-  constructor(protected request = new HTTPUtil.Request()) { }
+  constructor(protected request = new HTTPUtil.Request()) {}
 
   public async fetchPoints(lat: number, lng: number): Promise<ForecastPoint[]> {
     const endTimestamp = TimeUtil.getUnixTimeForAFutureDay(1);
@@ -83,7 +83,8 @@ export class StormGlass {
       const response = await this.request.get<StormGlassForecastResponse>(
         `${stormglassResourceConfig.get(
           'apiUrl'
-        )}/weather/point?lat=${lat}&lng=${lng}&params=${this.stormGlassAPIParams
+        )}/weather/point?lat=${lat}&lng=${lng}&params=${
+          this.stormGlassAPIParams
         }&source=${this.stormGlassAPISource}&end=${endTimestamp}`,
         {
           headers: {
@@ -100,7 +101,8 @@ export class StormGlass {
       const errorMessage = err as Error;
       if (axiosError.response && axiosError.response.data) {
         throw new StormGlassResponseError(
-          `Error: ${JSON.stringify(axiosError.response.data)} Code: ${axiosError.response.status
+          `Error: ${JSON.stringify(axiosError.response.data)} Code: ${
+            axiosError.response.status
           }`
         );
       }
