@@ -2,7 +2,6 @@ import './util/module-alias';
 import { Server } from '@overnightjs/core';
 import { Application } from 'express';
 import bodyParser from 'body-parser';
-import * as http from 'http';
 import expressPino from 'express-pino-logger';
 import cors from 'cors';
 import apiSchema from './api.schema.json';
@@ -14,6 +13,7 @@ import * as database from '@src/database';
 import { BeachesController } from './controllers/beaches';
 import { UsersController } from './controllers/users';
 import logger from './logger';
+import { apiErrorValidator } from '@src/middlewares/api-error-validator';
 
 export class SetupServer extends Server {
   /*
@@ -33,6 +33,7 @@ export class SetupServer extends Server {
     await this.docsSetup();
     this.setupControllers();
     await this.databaseSetup();
+    this.setupErrorHandlers();
   }
 
   private setupExpress(): void {
@@ -50,19 +51,27 @@ export class SetupServer extends Server {
     );
   }
 
+  private setupErrorHandlers(): void {
+    this.app.use(apiErrorValidator);
+  }
+
   private setupControllers(): void {
     const forecastController = new ForecastController();
     const beachesController = new BeachesController();
     const usersController = new UsersController();
-    this.addControllers([forecastController, beachesController, usersController]);
+    this.addControllers([
+      forecastController,
+      beachesController,
+      usersController,
+    ]);
   }
 
-  private async docsSetup(): Promise<void>{
+  private async docsSetup(): Promise<void> {
     this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(apiSchema));
     await new OpenApiValidator({
       apiSpec: apiSchema as OpenAPIV3.Document,
       validateRequests: true,
-      validateResponses:true
+      validateResponses: true,
     }).install(this.app);
   }
 
@@ -76,7 +85,7 @@ export class SetupServer extends Server {
 
   public start(): void {
     this.app.listen(this.port, () => {
-      logger.info(`Server listening on port: ${this.port}`)
+      logger.info(`Server listening on port: ${this.port}`);
     });
   }
 

@@ -14,22 +14,23 @@ body {
 }
 
 fieldset {
-  padding: 1.5em .5em .5em;
-  margin: .5em 0;
+  padding: 1.5em 0.5em 0.5em;
+  margin: 0.5em 0;
   border: none;
 }
 
-input, select {
+input,
+select {
   background-color: transparent;
   border: none;
   line-height: 2;
-  padding: .25em;
+  padding: 0.25em;
   width: 100%;
 }
 
 select {
   height: 2.5em;
-}            
+}
 
 input:focus,
 select:focus {

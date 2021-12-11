@@ -18,7 +18,11 @@ function readForecast() {
 }
 
 function useForecast({ onSuccess, ...options } = {}) {
-  const { data: forecast, status, error } = useQuery({
+  const {
+    data: forecast,
+    status,
+    error,
+  } = useQuery({
     queryKey: 'forecast',
     queryFn: readForecast,
     onSuccess: async (forecast) => {

@@ -44,15 +44,18 @@ function useAsync() {
     [safeSetState]
   );
 
-  const setData = React.useCallback((data) => safeSetState({ data }), [
-    safeSetState,
-  ]);
-  const setError = React.useCallback((error) => safeSetState({ error }), [
-    safeSetState,
-  ]);
-  const reset = React.useCallback(() => safeSetState(initialState), [
-    safeSetState,
-  ]);
+  const setData = React.useCallback(
+    (data) => safeSetState({ data }),
+    [safeSetState]
+  );
+  const setError = React.useCallback(
+    (error) => safeSetState({ error }),
+    [safeSetState]
+  );
+  const reset = React.useCallback(
+    () => safeSetState(initialState),
+    [safeSetState]
+  );
 
   return {
     isIdle: status === 'idle',

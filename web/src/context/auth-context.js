@@ -47,12 +47,10 @@ function AuthProvider(props) {
 
   const user = data?.user;
 
-  const value = React.useMemo(() => ({ user, login, logout, register }), [
-    login,
-    logout,
-    register,
-    user,
-  ]);
+  const value = React.useMemo(
+    () => ({ user, login, logout, register }),
+    [login, logout, register, user]
+  );
 
   if (isLoading || isIdle) {
     return (

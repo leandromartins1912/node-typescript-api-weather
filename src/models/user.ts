@@ -2,62 +2,61 @@ import mongoose, { Document } from 'mongoose';
 import AuthService from '@src/services/auth';
 import logger from '@src/logger';
 export interface User {
-    _id?: string;
-    name: string;
-    email: string;
-    password: string;
+  _id?: string;
+  name: string;
+  email: string;
+  password: string;
 }
 
 export enum CUSTOM_VALIDATION {
-    DUPLICATED = 'DUPLICATED',
+  DUPLICATED = 'DUPLICATED',
 }
 
 const schema = new mongoose.Schema(
-    {
-        name: { type: String, required: true },
-        email: {
-            type: String,
-            required: true,
-            unique: [true, 'Email must be unique'],
-        },
-        password: { type: String, required: true },
+  {
+    name: { type: String, required: true },
+    email: {
+      type: String,
+      required: true,
+      unique: [true, 'Email must be unique'],
     },
-    {
-        toJSON: {
-            transform: (_, ret): void => {
-                ret.id = ret._id;
-                delete ret._id;
-                delete ret.__v;
-            },
-        },
-    }
+    password: { type: String, required: true },
+  },
+  {
+    toJSON: {
+      transform: (_, ret): void => {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
+  }
 );
 
 /**
  * Validates the email and throws a validation error, otherwise it will throw a 500
  */
 schema.path('email').validate(
-    async (email: string) => {
-        const emailCount = await mongoose.models.User.countDocuments({ email });
-        return !emailCount;
-    },
-    'already exists in the database.',
-    CUSTOM_VALIDATION.DUPLICATED
+  async (email: string) => {
+    const emailCount = await mongoose.models.User.countDocuments({ email });
+    return !emailCount;
+  },
+  'already exists in the database.',
+  CUSTOM_VALIDATION.DUPLICATED
 );
 
-
 schema.pre<UserModel>('save', async function (): Promise<void> {
-    if (!this.password || !this.isModified('password')) {
-        return;
-    }
+  if (!this.password || !this.isModified('password')) {
+    return;
+  }
 
-    try {
-        const hashedPassword = await AuthService.hashPassword(this.password);
-        this.password = hashedPassword;
-    } catch (error) {
-        logger.error(`Error hashing the password for the user ${this.name}`);
-    }
-})
+  try {
+    const hashedPassword = await AuthService.hashPassword(this.password);
+    this.password = hashedPassword;
+  } catch (error) {
+    logger.error(`Error hashing the password for the user ${this.name}`);
+  }
+});
 
-interface UserModel extends Omit<User, '_id'>, Document { }
+interface UserModel extends Omit<User, '_id'>, Document {}
 export const User = mongoose.model<UserModel>('User', schema);
